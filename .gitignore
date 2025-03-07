@@ -1,0 +1,35 @@
+# Target directory (Maven build output)
+target/
+
+# Eclipse specific files
+.project
+.classpath
+.settings/
+
+.idea/
+
+# Compiled bytecode
+*.class
+
+# JAR/WAR/EAR files
+*.jar
+*.war
+*.ear
+
+# Dependency directory
+lib/
+
+# Coverage and testing reports
+coverage/
+*.exec
+*.ec
+*.coverage
+
+# Generated files
+generated/
+*.generated
+
+# Maven wrapper files
+.mvn/
+
+dependency-reduced-pom.xml

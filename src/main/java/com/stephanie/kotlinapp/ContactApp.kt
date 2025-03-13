@@ -3,6 +3,7 @@ package com.stephanie.kotlinapp
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.stephanie.kotlinapp.controller.AuthResource
 import com.stephanie.kotlinapp.controller.ContactPersonResource
 import com.stephanie.kotlinapp.dao.ContactPersonDaoImpl
 import io.dropwizard.Application
@@ -22,8 +23,11 @@ class ContactApp : Application<ContactAppConfiguration>() {
         val filter = environment.servlets().addFilter("CORS", CrossOriginFilter::class.java)
         filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*")
         filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,PUT,DELETE,OPTIONS")
-        filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin")
+        filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Content-Type, Authorization")
+        filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true")
+
         filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
+
 
         //val databaseConfig = configuration.database
         //val jdbi = Jdbi.create(databaseConfig!!.build(environment.metrics(), "postgresql"))
@@ -40,7 +44,9 @@ class ContactApp : Application<ContactAppConfiguration>() {
         environment.lifecycle().manage(mongoClient)
 
         val contactDAO = ContactPersonDaoImpl(database)
+        environment.jersey().register(CorsFilter())
         environment.jersey().register(ContactPersonResource(contactDAO))
+        environment.jersey().register(AuthResource(contactDAO))
 
         environment.objectMapper.apply {
             registerModule(KotlinModule.Builder().build())

@@ -5,9 +5,16 @@ import org.bson.types.ObjectId
 
 
 data class ContactPerson(
-    @BsonId val id: String = ObjectId().toHexString(),  // Store ObjectId as String
+    @BsonId val id: ObjectId = ObjectId(),
     val name: String,
     val email: String,
-    val phone: String
-)
+    val phone: String,
+    val password: String
+
+) {
+
+    fun getIdAsString(): String = id.toHexString()
+}
+
+
 
